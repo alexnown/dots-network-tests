@@ -22,7 +22,7 @@ namespace com.testnet.common
                 AddComponent(entity, new GamePrefabs
                 {
                     Player = GetEntity(authoring.PlayerPrefab, TransformUsageFlags.Dynamic),
-                    Bullet = GetEntity(authoring.BulletPrefab, TransformUsageFlags.Dynamic)
+                    Bullet = GetEntity(authoring.BulletPrefab, TransformUsageFlags.Dynamic),
                 });
             }
         }

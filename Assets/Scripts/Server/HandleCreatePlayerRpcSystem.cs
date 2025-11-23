@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace com.testnet.server
 {
+
     [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation)]
     public partial struct HandleCreatePlayerRpcSystem : ISystem
     {

@@ -6,44 +6,40 @@ using UnityEngine;
 
 namespace com.testnet.client
 {
-    [UpdateInGroup(typeof(GhostInputSystemGroup))]
-    public partial struct UpdatePlayerInputSystem : ISystem
+    //[UpdateInGroup(typeof(GhostInputSystemGroup))]
+    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    public partial class UpdatePlayerInputSystem : SystemBase
     {
-        //private InputSystem_Actions _inputs;
+        private InputSystem_Actions _inputs;
 
-        public void OnCreate(ref SystemState state)
+        protected override void OnCreate()
         {
-            state.RequireForUpdate<PlayerInputData>();
-            state.RequireForUpdate<NetworkStreamInGame>();
+            RequireForUpdate<PlayerInputData>();
+            RequireForUpdate<NetworkStreamInGame>();
+            _inputs = new InputSystem_Actions();
         }
 
-        public void OnUpdate(ref SystemState state)
+        protected override void OnStartRunning()
         {
-            foreach(var input in SystemAPI.Query<RefRW<PlayerInputData>>().WithAll<GhostOwnerIsLocal>())
-            {
-                float2 inputVector = new float2();
-                if(Input.GetKey(KeyCode.W))
-                {
-                    inputVector.y += 1;
-                } 
-                if (Input.GetKey(KeyCode.S))
-                {
-                    inputVector.y -= 1;
-                }
-                if (Input.GetKey(KeyCode.A))
-                {
-                    inputVector.x -= 1;
-                }
-                if (Input.GetKey(KeyCode.D))
-                {
-                    inputVector.x += 1;
-                }
-                input.ValueRW.MoveDirection = inputVector;
+            _inputs.Enable();
+        }
 
-                if(Input.GetKeyDown(KeyCode.Space))
+        protected override void OnStopRunning()
+        {
+            _inputs.Disable();
+        }
+
+        protected override void OnUpdate()
+        {
+            var moveInput = _inputs.Player.Move.ReadValue<Vector2>();
+            bool isShoot = _inputs.Player.Attack.WasPressedThisFrame();
+            foreach (var input in SystemAPI.Query<RefRW<PlayerInputData>>().WithAll<GhostOwnerIsLocal>())
+            {
+                input.ValueRW.MoveDirection = new float2(moveInput.x, moveInput.y);
+                if (isShoot)
                 {
                     input.ValueRW.Shoot.Set();
-                } 
+                }
                 else
                 {
                     input.ValueRW.Shoot = default;

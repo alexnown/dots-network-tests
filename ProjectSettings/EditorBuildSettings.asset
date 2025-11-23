@@ -9,8 +9,20 @@ EditorBuildSettings:
     path: Assets/Scenes/InitScene.unity
     guid: 4da68588cbe78e14f9941861fe968ae6
   - enabled: 1
-    path: Assets/Scenes/GameScene.unity
+    path: Assets/Scenes/ClientStartScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/ServerStartScene.unity
+    guid: a000182132225ce4093e9d44e49f42e5
+  - enabled: 1
+    path: Assets/Scenes/Serialized/ClientLobby.unity
+    guid: 9a1b2330f2fd851488dbfb70da031a2d
+  - enabled: 1
+    path: Assets/Scenes/Serialized/ServerLobby.unity
+    guid: 3f1f04c0fde110a42b9bc42cfb2a5376
+  - enabled: 1
+    path: Assets/Scenes/LinksToSerializedScenes.unity
+    guid: 1f028dd4ef2734d4daac4d6aaf70ca40
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

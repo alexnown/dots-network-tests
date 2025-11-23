@@ -27,16 +27,13 @@ namespace com.testnet.common
            {
                 float moveSpeed = 10f;
                 float3 moveVector = new float3(inputData.ValueRO.MoveDirection.x, 0, inputData.ValueRO.MoveDirection.y);
-                if(math.lengthsq(moveVector) > 0)
+                float3 passedVector = math.normalizesafe(moveVector) * moveSpeed * SystemAPI.Time.DeltaTime;
+                localTransform.ValueRW.Position += passedVector;
+                if (state.World.IsServer())
                 {
-                    float3 passedVector = math.normalize(moveVector) * moveSpeed * SystemAPI.Time.DeltaTime;
-                    localTransform.ValueRW.Position += passedVector;
-                    if(state.World.IsServer())
-                    {
-                        ghostData.ValueRW.PassedPath += math.length(passedVector);
-                    }
+                    ghostData.ValueRW.PassedPath += math.length(passedVector);
                 }
-           }
+            }
         }
     }
 }

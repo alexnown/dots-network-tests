@@ -2,6 +2,7 @@ using com.testnet.common;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
+using UnityEngine;
 
 namespace com.testnet.client
 {
@@ -15,9 +16,7 @@ namespace com.testnet.client
 
         public void OnCreate(ref SystemState state)
         {
-            var builder = new EntityQueryBuilder(Allocator.Temp).WithAll<NetworkId>().WithNone<NetworkStreamInGame>();
-            _pendingNetworkIdQuery = state.GetEntityQuery(builder);
-            builder = new EntityQueryBuilder(Allocator.Temp).WithAll<CreateNewPlayer>();
+            _pendingNetworkIdQuery = SystemAPI.QueryBuilder().WithAll<NetworkId>().WithNone<NetworkStreamInGame>().Build();
             _createPlayerQuery = state.GetEntityQuery(ComponentType.ReadWrite<CreateNewPlayer>());
             state.RequireForUpdate(_createPlayerQuery);
             state.RequireForUpdate(_pendingNetworkIdQuery);
@@ -25,6 +24,8 @@ namespace com.testnet.client
 
         public void OnUpdate(ref SystemState state)
         {
+            Debug.Log("executed " + typeof(SendCreatePlayerRpcToServerSystem));
+            return;
             var ecb = new EntityCommandBuffer(Allocator.Temp);
             ecb.DestroyEntity(_createPlayerQuery, EntityQueryCaptureMode.AtPlayback);
             var pendingNetworkIds = _pendingNetworkIdQuery.ToEntityArray(Allocator.Temp);
