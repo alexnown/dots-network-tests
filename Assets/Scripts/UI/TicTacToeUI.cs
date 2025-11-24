@@ -18,8 +18,25 @@ namespace com.testnet.ui
         public void UpdateGameState(TicTacToeUpdateGameStateRpc gameState)
         {
             bool isPlayerTurn = gameState.Turn % 2 == gameState.PlayerOrder;
-            _turnInfoText.text = isPlayerTurn ? "Your turn" : "Wait opponent turn";
-            _turnInfoBackground.color = _playerColors[gameState.Turn % 2];
+            if (TicTacToeUtils.GameIsEnded(gameState.GameResultFlags))
+            {
+                _turnInfoBackground.color = new Color(0, 0, 0);
+                if(TicTacToeUtils.IsDraw(gameState.GameResultFlags))
+                {
+                    _turnInfoText.text = "Is Draw";
+                } 
+                else
+                {
+                    bool playerIsWin = TicTacToeUtils.PlayerIsWin(gameState.GameResultFlags, gameState.PlayerOrder);
+                    _turnInfoText.text = playerIsWin ? "You win" : "Opponent win";
+                }
+            } 
+            else
+            {
+                
+                _turnInfoText.text = isPlayerTurn ? "Your turn" : "Wait opponent turn";
+                _turnInfoBackground.color = _playerColors[gameState.Turn % 2];
+            }
             UpdateCellsState(gameState.CellsPlayer1, gameState.CellsPlayer2);
         }
 
