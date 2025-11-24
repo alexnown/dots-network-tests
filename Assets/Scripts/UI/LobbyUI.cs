@@ -1,4 +1,5 @@
 using com.testnet.common;
+using com.tictactoe.common;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
@@ -20,6 +21,18 @@ namespace com.testnet.ui
             _playersInLobbyText.text = "Waiting connection to lobby";
             _ticTacToeInfoText.text = string.Empty;
             _realtimeBattleRoomInfoText.text = string.Empty;
+            _startTicTacToeBtn.onClick.AddListener(OnClickedStartTicTacToe);
+        }
+
+        private void OnClickedStartTicTacToe()
+        {
+            foreach (var world in World.All)
+            {
+                if (world.IsClient())
+                {
+                    world.EntityManager.CreateEntity(ComponentType.ReadOnly<TicTacToeStartGameRpc>(), ComponentType.ReadOnly<SendRpcCommandRequest>());
+                }
+            }
         }
 
         private void Update()

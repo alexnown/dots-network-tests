@@ -1,3 +1,5 @@
+using com.tictactoe.client;
+using com.tictactoe.common;
 using UnityEngine;
 
 namespace com.testnet.ui
@@ -10,6 +12,23 @@ namespace com.testnet.ui
         private void Start()
         {
             _ticTacToeUi.gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            TicTacToeHandleUpdateGameStateSystem.OnHandleGameState += OnTicTacToeStateHandle;
+        }
+
+        private void OnDisable()
+        {
+            TicTacToeHandleUpdateGameStateSystem.OnHandleGameState -= OnTicTacToeStateHandle;
+        }
+
+        private void OnTicTacToeStateHandle(TicTacToeUpdateGameStateRpc state)
+        {
+            _ticTacToeUi.UpdateGameState(state);
+            _ticTacToeUi.gameObject.SetActive(true);
+            
         }
     }
 }

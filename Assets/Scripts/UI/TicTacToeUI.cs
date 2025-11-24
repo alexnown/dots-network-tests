@@ -1,4 +1,4 @@
-using com.testnet.common;
+using com.tictactoe.common;
 using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
@@ -10,9 +10,26 @@ namespace com.testnet.ui
     public class TicTacToeUI : MonoBehaviour
     {
         public Color[] _playerColors;
+        [SerializeField] private RawImage _turnInfoBackground;
         [SerializeField] private RawImage [] _cellStateImages;
         [SerializeField] private TMPro.TextMeshProUGUI _turnInfoText;
         [SerializeField] private Button _exitButton;
+
+        public void UpdateGameState(TicTacToeUpdateGameStateRpc gameState)
+        {
+            bool isPlayerTurn = gameState.Turn % 2 == gameState.PlayerOrder;
+            _turnInfoText.text = isPlayerTurn ? "Your turn" : "Wait opponent turn";
+            _turnInfoBackground.color = _playerColors[gameState.Turn % 2];
+            UpdateCellsState(gameState.CellsPlayer1, gameState.CellsPlayer2);
+        }
+
+        public void UpdateCellsState(ushort player1, ushort player2)
+        {
+            for (int i = 0; i < _cellStateImages.Length; i++)
+            {
+                _cellStateImages[i].color = GetCellColor(i, player1, player2);
+            }
+        }
 
         private void Start()
         {
@@ -37,14 +54,6 @@ namespace com.testnet.ui
             eventTrigger.triggers.Add(entry);
         }
 
-        public void UpdateCellsState(ushort player1, ushort player2)
-        {
-            for(int i=0; i<_cellStateImages.Length; i++)
-            {
-                _cellStateImages[i].color = GetCellColor(i, player1, player2);
-            }
-        }
-
         private Color GetCellColor(int index, ushort player1, ushort player2)
         {
             if (((player1 >> index) & 1) == 1)
@@ -60,7 +69,6 @@ namespace com.testnet.ui
 
         private void OnCellClicked(int index)
         {
-            Debug.Log("cell click " + index);
             foreach(var world in World.All)
             {
                 if(world.IsClient())
